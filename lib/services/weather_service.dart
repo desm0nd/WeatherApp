@@ -8,7 +8,9 @@ import 'package:flutter_application_1/models/weather_model.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherService{
-  static const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
+  static const baseUrl = "https://api.openweathermap.org/data/2.5/weather";
+
+  //https://api.openweathermap.org/data/2.5/weather
   final String apikey;
 
   WeatherService(this.apikey);
@@ -26,11 +28,14 @@ class WeatherService{
       desiredAccuracy: LocationAccuracy.high
     );
 
+    double latitude = position.latitude;
+    double longitude = position.longitude;
 
-    final response = await http.get(Uri.parse('$BASE_URL?lat=$position.Latitude&lon=$position.Longitude&appid=$apikey&units=metric'));
+    //?lat={lat}&lon={lon}&exclude={part}&appid={API key}
+    final response = await http.get(Uri.parse('$baseUrl?lat=$latitude&lon=$longitude&appid=$apikey&units=Metric'));
     if (kDebugMode) {
-      print("response");
-      print(response);
+      //debugPrint('URL: ${response.request?.url}');
+      //print(response.body);
     }
 
     if ( response.statusCode == 200 ){
@@ -49,7 +54,7 @@ class WeatherService{
       permission = await Geolocator.requestPermission();
     }
     if (kDebugMode) {
-      print(permission);
+      //print(permission);
     }
 
     //fetch current location
@@ -57,13 +62,13 @@ class WeatherService{
       desiredAccuracy: LocationAccuracy.high
     );
     if (kDebugMode) {
-      print(position);
+      //print(position);
     }
 
     //convert location into list of placemeark objects
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     if (kDebugMode) {
-      print(placemarks[0].locality);
+      //print(placemarks[0].locality);
     }
 
     //extract cityname
